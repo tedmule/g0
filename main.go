@@ -1,13 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"context"
+
+	"github.com/docker/docker/client"
+)
 
 func main() {
-
-	fmt.Println("hello ted")
-	var x int = 12
-
-	if x > 10 {
-		fmt.Println("x bigger than 10")
-	}
+	ctx := context.Background()
+	cli, err := client.NewClient
 }
