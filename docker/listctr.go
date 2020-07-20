@@ -22,5 +22,6 @@ func main() {
 
 	for _, container := range containers {
 		fmt.Println(container.ID)
+		fmt.Println(container.Name)
 	}
 }
