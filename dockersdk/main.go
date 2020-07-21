@@ -1,0 +1,35 @@
+package main
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/docker/docker/api/types"
+    "github.com/docker/docker/client"
+)
+
+func main() {
+    cli, err := client.NewEnvClient()
+    if err != nil {
+        panic(err)
+    }
+
+    containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+    if err != nil {
+        panic(err)
+    }
+
+    for _, container := range containers {
+        fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+    }
+
+    networks, err := cli.NetworkList(context.Background(), types.NetworkListOptions{})
+    if err != nil {
+        panic(err)
+    }
+
+    for _, network := range networks {
+        fmt.Printf("%s\n", network.Name)
+    }
+
+}
