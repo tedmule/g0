@@ -1,13 +1,21 @@
 package main
 
 import (
-    "fmt"
+	"encoding/json"
+	"fmt"
 )
 
-func main() {
-    i := 3
-    pi := &i
+type User struct {
+	Name   string
+	Gender string
+}
 
-    fmt.Printf("%v\n", i)
-    fmt.Printf("%v\n", *pi)
+func main() {
+	user := &User{Name: "Frank", Gender: "male"}
+	b, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(b))
 }
