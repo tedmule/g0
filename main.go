@@ -1,21 +1,28 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
+	"sync"
+
+	"github.com/g0gogo/netswatch"
+	"github.com/g0gogo/packs"
 )
 
-type User struct {
-	Name   string
-	Gender string
-}
-
 func main() {
-	user := &User{Name: "Frank", Gender: "male"}
-	b, err := json.Marshal(user)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(b))
+	wg := sync.WaitGroup{}
+	ctx := context.Background()
+
+	netswatch.ListContainers(ctx)
+	packs.DemoJson()
+
+	wg.Add(1)
+	go func() {
+		netswatch.WatchNetwork(ctx, &wg)
+	}()
+
+	wg.Add(1)
+	go func() {
+		netswatch.WatchCtrEvents(ctx, &wg)
+	}()
+	wg.Wait()
 }
