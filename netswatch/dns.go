@@ -15,11 +15,58 @@
 package netswatch
 
 import (
-	"github.com/hashicorp/consul/api"
+	"fmt"
+
+	consul "github.com/hashicorp/consul/api"
 )
 
-type ConsulConfig struct {
-	Endpoint string
+type NWService struct {
+	ID      string
+	Address string
+	Tags    []string
+	Name    string
 }
 
-var cfg api.ConsulConfig
+type DNSRegistry struct {
+	Endpoint string
+	Token    string
+}
+
+func (dnsr *DNSRegistry) ListService() {
+	cli, err := consul.NewClient(&consul.Config{
+		Address: dnsr.Endpoint,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	agent := cli.Agent()
+	svcs, err := agent.Services()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("%+v", svcs)
+}
+
+func (dnsr *DNSRegistry) RegisterSvc() {
+	cli, err := consul.NewClient(&consul.Config{
+		Address: dnsr.Endpoint,
+		Token:   dnsr.Token,
+	})
+	if err != nil {
+		panic(err)
+	}
+	agent := cli.Agent()
+
+	var svc consul.AgentServiceRegistration
+
+	svc.ID = "Demo2"
+	svc.Name = "heheda"
+
+	regErr := agent.ServiceRegister(&svc)
+	if regErr != nil {
+		panic(regErr)
+	}
+
+}
