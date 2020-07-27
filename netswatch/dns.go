@@ -16,8 +16,14 @@ package netswatch
 
 import (
 	"fmt"
+	"net/http"
+	"time"
+)
 
-	consul "github.com/hashicorp/consul/api"
+const (
+	consulServicesAPI   = "/v1/agent/services"
+	consulRegisterAPI   = "/v1/agent/service/register"
+	consulDeregisterAPI = "/v1/agent/service/deregister"
 )
 
 type NWService struct {
@@ -33,40 +39,22 @@ type DNSRegistry struct {
 }
 
 func (dnsr *DNSRegistry) ListService() {
-	cli, err := consul.NewClient(&consul.Config{
-		Address: dnsr.Endpoint,
-	})
+	url := dnsr.Endpoint + consulServicesAPI
+	fmt.Println(url)
+
+	cli := &http.Client{
+		Timeout: time.Second * 5,
+	}
+
+	// resp, err := cli.Get("http://devops.cetcxl.com/tools/ip")
+	resp, err := cli.Get(url)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(resp)
+	fmt.Println(resp.Status)
 
-	agent := cli.Agent()
-	svcs, err := agent.Services()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%+v", svcs)
 }
 
 func (dnsr *DNSRegistry) RegisterSvc() {
-	cli, err := consul.NewClient(&consul.Config{
-		Address: dnsr.Endpoint,
-		Token:   dnsr.Token,
-	})
-	if err != nil {
-		panic(err)
-	}
-	agent := cli.Agent()
-
-	var svc consul.AgentServiceRegistration
-
-	svc.ID = "Demo2"
-	svc.Name = "heheda"
-
-	regErr := agent.ServiceRegister(&svc)
-	if regErr != nil {
-		panic(regErr)
-	}
-
 }
