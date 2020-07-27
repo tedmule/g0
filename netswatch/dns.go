@@ -46,8 +46,9 @@ func (dnsr *DNSRegistry) ListService() {
 		Timeout: time.Second * 5,
 	}
 
-	// resp, err := cli.Get("http://devops.cetcxl.com/tools/ip")
-	resp, err := cli.Get(url)
+	req, _ := http.NewRequest("GET", url, nil)
+
+	resp, err := cli.Do(req)
 	if err != nil {
 		panic(err)
 	}
