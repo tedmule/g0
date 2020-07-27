@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"time"
+
 	nw "github.com/g0gogo/netswatch"
 )
 
@@ -27,7 +30,10 @@ func main() {
 	dnsRegistry.Endpoint = "http://172.16.66.10:8500"
 	dnsRegistry.Token = "cd3895fe-04d6-609e-4e3d-138e5a0bbf3b"
 
-	// dnsRegistry.RegisterSvc()
-	// time.Sleep(2 * time.Second)
+	dnsRegistry.RegisterSvc()
+	time.Sleep(2 * time.Second)
 	dnsRegistry.ListService()
+
+	meta := nw.GenerateNodeMeta()
+	fmt.Printf("%+v", meta)
 }
