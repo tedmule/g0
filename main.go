@@ -2,38 +2,26 @@ package main
 
 import (
 	"fmt"
-	"time"
-
-	nw "github.com/g0gogo/netswatch"
+	"regexp"
 )
 
+func formatServiceString(s string) string {
+	/*
+		Input string and return:
+		abc         -> abc
+		abc.com     -> abc-com
+		abc..com    -> abc-com
+		abc_com     -> abc-com
+		c.com_cn  	-> abc-com-cn
+	*/
+	replaced := regexp.MustCompile(`\.+|_+`)
+	return replaced.ReplaceAllString(s, "-")
+}
+
 func main() {
-	nw.Hello()
-	// wg := sync.WaitGroup{}
-	// ctx := context.Background()
-
-	// nw.ListContainers(ctx)
-
-	// wg.Add(1)
-	// go func() {
-	// 	nw.WatchNetwork(ctx, &wg)
-	// }()
-
-	// wg.Add(1)
-	// go func() {
-	// 	nw.WatchCtrEvents(ctx, &wg)
-	// }()
-
-	// wg.Wait()
-	var dnsRegistry nw.DNSRegistry
-
-	dnsRegistry.Endpoint = "http://172.16.66.10:8500"
-	dnsRegistry.Token = "cd3895fe-04d6-609e-4e3d-138e5a0bbf3b"
-
-	dnsRegistry.RegisterSvc()
-	time.Sleep(2 * time.Second)
-	dnsRegistry.ListService()
-
-	meta := nw.GenerateNodeMeta()
-	fmt.Printf("%+v", meta)
+	fmt.Println(formatServiceString("abc.com"))
+	fmt.Println(formatServiceString("abc.com"))
+	fmt.Println(formatServiceString("abc...com"))
+	fmt.Println(formatServiceString("abc_com"))
+	fmt.Println(formatServiceString("abc_com.cn"))
 }
