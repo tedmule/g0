@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+<<<<<<< HEAD
 	"regexp"
 )
 
@@ -24,4 +25,13 @@ func main() {
 	fmt.Println(formatServiceString("abc...com"))
 	fmt.Println(formatServiceString("abc_com"))
 	fmt.Println(formatServiceString("abc_com.cn"))
+=======
+
+	"github.com/g0gogo/packs"
+)
+
+func main() {
+	fmt.Println("hello")
+	packs.DemoJson()
+>>>>>>> 50c081d3915ea6347322571587fa4504c87cd47b
 }
