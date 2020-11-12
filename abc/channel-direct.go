@@ -1,6 +1,4 @@
-package main
-
-import "fmt"
+package abc
 
 func ping(pings chan<- string, msg string) {
 	pings <- msg
@@ -11,10 +9,10 @@ func pong(pings <-chan string, pongs chan<- string) {
 	pongs <- msg
 }
 
-func main() {
-	pings := make(chan string, 1)
-	pongs := make(chan string, 1)
-	ping(pings, "passwd message")
-	pong(pings, pongs)
-	fmt.Println(<-pongs)
-}
+// func main() {
+// pings := make(chan string, 1)
+// pongs := make(chan string, 1)
+// ping(pings, "passwd message")
+// pong(pings, pongs)
+// fmt.Println(<-pongs)
+// }

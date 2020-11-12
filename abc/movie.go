@@ -1,10 +1,4 @@
-package main
-
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-)
+package abc
 
 type Movie struct {
 	Title  string
@@ -22,13 +16,13 @@ var movies = []Movie{
 		Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
 }
 
-func main() {
-	data, err := json.MarshalIndent(movies, "", "    ")
-	// data, err := json.Marshal(movies)
-	if err != nil {
-		log.Fatalf("JSON marshaling failed: %s", err)
-	}
+// func main() {
+// 	data, err := json.MarshalIndent(movies, "", "    ")
+// 	// data, err := json.Marshal(movies)
+// 	if err != nil {
+// 		log.Fatalf("JSON marshaling failed: %s", err)
+// 	}
 
-	fmt.Printf("%s\n", data)
+// 	fmt.Printf("%s\n", data)
 
-}
+// }

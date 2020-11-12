@@ -1,4 +1,4 @@
-package main
+package abc
 
 import (
 	"fmt"
@@ -23,8 +23,8 @@ func hello(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func main() {
-	http.HandleFunc("/hello", hello)
+// func main() {
+// 	http.HandleFunc("/hello", hello)
 
-	http.ListenAndServe(":8080", nil)
-}
+// 	http.ListenAndServe(":8080", nil)
+// }

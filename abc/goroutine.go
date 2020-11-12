@@ -1,4 +1,4 @@
-package main
+package go
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ func say(s string) {
 	}
 }
 
-func main() {
-	go say("world")
-	say("hello")
-}
+// func main() {
+// 	go say("world")
+// 	say("hello")
+// }

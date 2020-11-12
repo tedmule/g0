@@ -17,9 +17,9 @@ func headers(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func main() {
-	http.HandleFunc("/hello", hello)
-	http.HandleFunc("/headers", headers)
+// func main() {
+// 	http.HandleFunc("/hello", hello)
+// 	http.HandleFunc("/headers", headers)
 
-	http.ListenAndServe(":8080", nil)
-}
+// 	http.ListenAndServe(":8080", nil)
+// }

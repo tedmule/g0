@@ -1,4 +1,4 @@
-package main
+package abc
 
 import (
 	"fmt"
@@ -40,10 +40,10 @@ func measure(g geometry) {
 	fmt.Println(g.perim())
 }
 
-func main() {
-	r := rect{width: 3, height: 4}
-	c := circle{radius: 5}
+// func main() {
+// 	r := rect{width: 3, height: 4}
+// 	c := circle{radius: 5}
 
-	measure(r)
-	measure(c)
-}
+// 	measure(r)
+// 	measure(c)
+// }

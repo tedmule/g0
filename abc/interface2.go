@@ -1,7 +1,6 @@
-package main
+package abc
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -9,17 +8,17 @@ type Abser interface {
 	Abs() float64
 }
 
-func main() {
-	var a Abser
-	f := MyFloat(-math.Sqrt2)
-	v := Vertex{3, 4}
+// func main() {
+// 	var a Abser
+// 	f := MyFloat(-math.Sqrt2)
+// 	v := Vertex{3, 4}
 
-	a = f
-	a = &v
+// 	a = f
+// 	a = &v
 
-	a = v
-	fmt.Println(a.Abs())
-}
+// 	a = v
+// 	fmt.Println(a.Abs())
+// }
 
 type MyFloat float64
 
