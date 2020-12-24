@@ -1,4 +1,4 @@
-package packs
+package abc
 
 type zero struct{} // Empty stuct, 0 byte
 
