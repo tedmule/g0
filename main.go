@@ -9,6 +9,7 @@ import (
 
 func main() {
 	arr := abc.GenerateRandIntArr(10)
+
 	fmt.Printf("Origin: %+v\n", arr)
 
 	defer abc.Elapsed()()
@@ -18,5 +19,4 @@ func main() {
 	sorted := sorting.QuickSort2(arr)
 
 	fmt.Printf("Sorted: %v\n", sorted)
-
 }
