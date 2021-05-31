@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/gog0/abc"
-	"github.com/gog0/algo/sorting"
+	"github.com/ski2per/g0/abc"
+	"github.com/ski2per/g0/algo/sorting"
 )
 
 func main() {

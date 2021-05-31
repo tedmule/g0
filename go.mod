@@ -1,3 +1,3 @@
-module github.com/gog0
+module github.com/ski2per/g0
 
 go 1.14
