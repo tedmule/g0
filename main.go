@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ski2per/g0/abc"
-	"github.com/ski2per/g0/algo/sorting"
+	"github.com/ski2per/g0/algo"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 
 	// sorted := sorting.BubbleSort(arr)
 	// sorted := sorting.QuickSort(arr)
-	sorted := sorting.QuickSort2(arr)
+	sorted := algo.QuickSort2(arr)
 
 	fmt.Printf("Sorted: %v\n", sorted)
 }
