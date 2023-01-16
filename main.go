@@ -1,9 +1,16 @@
 package main
 
 import (
-	"github.com/ski2per/g0/abc/cmd"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	cmd.Execute()
+	r := gin.Default()
+	r.GET("/ping", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	r.Run()
 }
