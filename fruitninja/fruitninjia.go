@@ -2,6 +2,7 @@ package fruitninja
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -11,13 +12,19 @@ import (
 func FruitNinjaRouterSetup() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/:fruit/:count", func(ctx *gin.Context) {
+	// r.GET("/:fruit/:count", func(ctx *gin.Context) {
+	r.GET("/", func(ctx *gin.Context) {
 		var msg string
 
-		fruit := ctx.Param("fruit")
-		cnt, err := strconv.Atoi(ctx.Param("count"))
+		fruit := os.Getenv("FRUIT_NINJA_NAME")
+		fmt.Println(fruit)
+		count := os.Getenv("FRUIT_NINJA_COUNT")
+
+		// fruit := ctx.Param("fruit")
+		cnt, err := strconv.Atoi(count)
 		if err != nil {
-			ctx.String(500, fmt.Sprintf("%s: %s", "🐞", err.Error()))
+			fmt.Printf("%s: %s\n", "🐞", err.Error())
+			cnt = 1
 		}
 
 		switch fruit {
