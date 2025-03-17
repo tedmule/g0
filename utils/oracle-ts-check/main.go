@@ -133,7 +133,7 @@ func getEnvOrDefault(key, defaultValue string) string {
 	return defaultValue
 }
 
-func dieOnError(msg string, err error) {
+func exitOnError(msg string, err error) {
 	if err != nil {
 		fmt.Printf("%s %v\n", msg, err)
 		os.Exit(1)
@@ -144,7 +144,7 @@ func main() {
 	percentStr := getEnvOrDefault("ORACLE_TS_PERCENT", "80")
 	percent, err := strconv.ParseFloat(percentStr, 64) // 64 表示转为 float64
 	username := getEnvOrDefault("ORACLE_TS_USERNAME", "username")
-	password := getEnvOrDefault("ORACLE_TS_USERNAME", "password")
+	password := getEnvOrDefault("ORACLE_TS_PASSWORD", "password")
 	connStr := getEnvOrDefault("ORACLE_TS_CONN", "localhost:1521/name")
 	if err != nil {
 		fmt.Println("转换失败:", err)
@@ -169,20 +169,21 @@ func main() {
 
 	// Simplified DSN for go-ora/v2
 	dsn := fmt.Sprintf("oracle://%s:%s@%s", username, password, connStr)
+	fmt.Println(dsn)
 
 	conn, err := sql.Open("oracle", dsn)
-	dieOnError("error while connecting to "+connStr+":", err)
+	exitOnError("error while connecting to "+connStr+":", err)
 	defer conn.Close()
 
 	err = conn.Ping()
-	dieOnError("Ping failed:", err)
+	exitOnError("Ping failed:", err)
 
 	stmt, err := conn.Prepare(tsSQL)
-	dieOnError("Can't prepare query:", err)
+	exitOnError("Can't prepare query:", err)
 	defer stmt.Close()
 
 	rows, err := stmt.Query()
-	dieOnError("Can't create query:", err)
+	exitOnError("Can't create query:", err)
 	defer rows.Close()
 
 	var messages []string
