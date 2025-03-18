@@ -141,8 +141,8 @@ func exitOnError(msg string, err error) {
 }
 
 func main() {
-	percentStr := getEnvOrDefault("ORACLE_TS_PERCENT", "80")
-	percent, err := strconv.ParseFloat(percentStr, 64) // 64 表示转为 float64
+	percentageStr := getEnvOrDefault("ORACLE_TS_PERCENTAGE", "80")
+	percent, err := strconv.ParseFloat(percentageStr, 64) // 64 表示转为 float64
 	username := getEnvOrDefault("ORACLE_TS_USERNAME", "username")
 	password := getEnvOrDefault("ORACLE_TS_PASSWORD", "password")
 	connStr := getEnvOrDefault("ORACLE_TS_CONN", "localhost:1521/name")
@@ -152,19 +152,52 @@ func main() {
 	}
 
 	tsSQL := `
-	SELECT
-		t.tablespace_name,
-		t.total_space,
-		NVL(f.free_space, 0)
-	FROM
-		(SELECT tablespace_name, SUM(bytes) total_space
-		 FROM dba_data_files
-		 GROUP BY tablespace_name) t
-	LEFT JOIN
-		(SELECT tablespace_name, SUM(bytes) free_space
-		 FROM dba_free_space
-		 GROUP BY tablespace_name) f
-	ON t.tablespace_name = f.tablespace_name
+	select tablespace_name, total_space_mb as "TOTAL", free_space_mb as "FREE"
+  	from (select decode(t.tablespace_name,
+                      null,
+                      y.tablespace_name,
+                      t.tablespace_name) tablespace_name,
+               decode(t.tablespace_name,
+                      null,
+                      y.total_space_mb,
+                      t.total_space_mb + nvl(y.total_space_mb, 0)) total_space_mb,
+               decode(t.tablespace_name,
+                      null,
+                      y.free_space_mb,
+                      t.free_space_mb + nvl(y.free_space_mb, 0)) free_space_mb
+          from (select a.tablespace_name, a.total_space_mb, b.free_space_mb
+                  from (select a.tablespace_name, sum(a.bytes) total_space_mb
+                          from dba_data_files a
+                         where a.AUTOEXTENSIBLE = 'NO'
+                         group by a.tablespace_name) a,
+                       (select tablespace_name, sum(bytes) free_space_mb
+                          from dba_free_space
+                         where file_id in
+                               (select file_id
+                                  from dba_data_files b
+                                 where b.AUTOEXTENSIBLE = 'NO')
+                         group by tablespace_name) b
+                 where a.tablespace_name = b.tablespace_name) t
+          full join (select t.tablespace_name,
+                           t.total_space_mb,
+                           total_space_mb - t.used_space_mb +
+                           y.free_space_mb as free_space_mb
+                      from (select m.tablespace_name,
+                                   sum(m.maxbytes) total_space_mb,
+                                   sum(m.bytes) used_space_mb
+                              from dba_data_files m
+                             where m.AUTOEXTENSIBLE = 'YES'
+                             group by m.tablespace_name) t,
+                           (select m.tablespace_name,
+                                   sum(m.bytes) free_space_mb
+                              from dba_free_space m
+                             where file_id in
+                                   (select file_id
+                                      from dba_data_files
+                                     where AUTOEXTENSIBLE = 'YES')
+                             group by m.tablespace_name) y
+                     where t.tablespace_name = y.tablespace_name) y
+            on t.tablespace_name = y.tablespace_name)
 	`
 
 	// Simplified DSN for go-ora/v2
@@ -187,6 +220,7 @@ func main() {
 	defer rows.Close()
 
 	var messages []string
+	var flag bool = false
 	for rows.Next() {
 		var tablespaceName string
 		var totalSpace, freeSpace int64
@@ -206,15 +240,21 @@ func main() {
 
 		// Check if usage exceeds 80%
 		if usagePercent > percent {
+			flag = true
 			// messages = append(messages, fmt.Sprintf("%s | %d/%d | **%.2f%%**", tablespaceName, freeSpace, totalSpace, usagePercent))
 			messages = append(messages, fmt.Sprintf("%s: **%.2f%%**", tablespaceName, usagePercent))
 		}
 	}
-	dingdingMessage := fmt.Sprintf("## 🔎 Oracle表空间检查\n\n %s", strings.Join(messages, "\n\n"))
-	sendDingTalkMessage(
-		"Oracle表空间检查",
-		dingdingMessage,
-		nil,   // atMobiles (can be customized)
-		false, // atAll
-	)
+
+	if flag {
+		dingdingMessage := fmt.Sprintf("## 🔎 Oracle表空间告警\n\n %s", strings.Join(messages, "\n\n"))
+		sendDingTalkMessage(
+			"Oracle表空间检查",
+			dingdingMessage,
+			nil,   // atMobiles (can be customized)
+			false, // atAll
+		)
+	} else {
+		fmt.Println("🐛 表空间正常，不发送钉钉消息")
+	}
 }
